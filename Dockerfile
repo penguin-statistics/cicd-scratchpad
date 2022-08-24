@@ -6,9 +6,6 @@ FROM base AS builder
 ENV GOOS linux
 ENV GOARCH amd64
 
-# build-args
-ARG VERSION
-
 RUN apk --no-cache add bash git openssh
 
 COPY . .
