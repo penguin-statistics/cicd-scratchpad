@@ -67,5 +67,5 @@ jobs:
         with:
           file-path: 'applications/cicd-scratchpad/manifest.json'
           version-path: 'image.tag'
-          version: ${{ env.VERSION }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ env.AUTOMATIC_RELEASES_TAG }}
+          token: ${{ secrets.PAT_FOR_MANIFESTBOT }}
