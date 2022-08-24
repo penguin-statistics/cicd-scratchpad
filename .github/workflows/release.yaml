@@ -63,7 +63,7 @@ jobs:
           prerelease: false
       
       - name: "ManifestBot: Update Manifest"
-        uses: "penguin-statistics/manifestbot@v7"
+        uses: "penguin-statistics/manifestbot@v8"
         with:
           file-path: 'applications/cicd-scratchpad/manifest.json'
           version-path: 'image.tag'
