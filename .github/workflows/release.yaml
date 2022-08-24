@@ -65,7 +65,7 @@ jobs:
       - name: "ManifestBot: Update Manifest"
         uses: "penguin-statistics/manifestbot@v9"
         with:
-          file-path: 'applications/cicd-scratchpad/manifest.json'
+          file-path: 'applications/cicd-scratchpad/values-prod.yaml'
           version-path: 'image.tag'
           version: ${{ env.AUTOMATIC_RELEASES_TAG }}
           token: ${{ secrets.PAT_FOR_MANIFESTBOT }}
