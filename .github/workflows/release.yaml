@@ -27,17 +27,13 @@ jobs:
         with:
           version: ${{ steps.git-meta.outputs.version }}
           repository: 'penguin-statistics/cicd-scratchpad'
-      
-      - name: "GitHub: Create Repository Release"
-        uses: "marvinpinto/action-automatic-releases@v1.2.1"
+
+      - name: "Release: Call Dispatcher"
+        id: release-dispatcher
+        uses: 'penguin-statistics/actions/release-dispatcher@main'
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
+          version: ${{ steps.git-meta.outputs.version }}
+          use-ghrelease: true
+          use-manifestbot: true
+          manifestbot-file-path: 'applications/cicd-scratchpad/values-prod.yaml'
       
-      - name: "ManifestBot: Update Manifest"
-        uses: "penguin-statistics/actions/manifestbot@main"
-        with:
-          file-path: 'applications/cicd-scratchpad/values-prod.yaml'
-          version-path: 'image.tag'
-          version: ${{ steps.git-meta.outputs.semver }}
-          token: ${{ secrets.PAT_FOR_MANIFESTBOT }}
