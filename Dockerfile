@@ -10,8 +10,10 @@ RUN apk --no-cache add bash git openssh
 
 COPY . .
 
+ARG VERSION
+
 # inject versioning information & build the binary
-RUN export BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); go build -ldflags "-X cicd-scratchpad.BuildTime=$BUILD_TIME" -o cicdscratchpad .
+RUN export BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ"); go build -ldflags "-X 'main.BuildTime=$BUILD_TIME' -X 'main.Version=$VERSION'" -o cicdscratchpad .
 
 # runner
 FROM base AS runner
