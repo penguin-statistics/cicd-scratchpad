@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: "Get Metadata"
-        id: meta
+        id: gitmeta
         run: |
           export TRUNCATED_GITHUB_SHA=$(echo ${{ github.sha }} | cut -c1-7);
           export VERSION=${GITHUB_REF/refs\/tags\//};
@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Docker: Metadata"
-        id: meta
+        id: dockermeta
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/penguin-statistics/cicd-scratchpad
@@ -52,12 +52,12 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.dockermeta.outputs.tags }}
+          labels: ${{ steps.dockermeta.outputs.labels }}
           cache-from: type=registry,ref=ghcr.io/penguin-statistics/cicd-scratchpad:buildcache
           cache-to: type=registry,ref=ghcr.io/penguin-statistics/cicd-scratchpad:buildcache,mode=max
           build-args: |
-            VERSION=${{ steps.meta.outputs.version }}
+            VERSION=${{ steps.gitmeta.outputs.version }}
 
       - name: "GitHub: Create Repository Release"
         uses: "marvinpinto/action-automatic-releases@v1.2.1"
@@ -70,5 +70,5 @@ jobs:
         with:
           file-path: 'applications/cicd-scratchpad/values-prod.yaml'
           version-path: 'image.tag'
-          version: ${{ steps.meta.outputs.semver }}
+          version: ${{ steps.gitmeta.outputs.semver }}
           token: ${{ secrets.PAT_FOR_MANIFESTBOT }}
