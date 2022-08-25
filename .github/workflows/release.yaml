@@ -19,11 +19,11 @@ jobs:
 
       - name: "Metadata: Git"
         id: git-meta
-        uses: 'penguin-statistics/actions/git-meta'
+        uses: 'penguin-statistics/actions/git-meta@main'
       
       - name: "Docker: Build and Push Image"
         id: ghcr-docker
-        uses: 'penguin-statistics/actions/ghcr-docker'
+        uses: 'penguin-statistics/actions/ghcr-docker@main'
         with:
           version: ${{ steps.git-meta.outputs.version }}
           repository: 'penguin-statistics/cicd-scratchpad'
