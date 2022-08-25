@@ -17,11 +17,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Get Tag Version"
-        id: get_version
+      - name: "Get Metadata"
+        id: meta
         run: |
           export TRUNCATED_GITHUB_SHA=$(echo ${{ github.sha }} | cut -c1-7);
-          echo "VERSION=${GITHUB_REF/refs\/tags\//}+${TRUNCATED_GITHUB_SHA}" >> $GITHUB_ENV
+          export VERSION=${GITHUB_REF/refs\/tags\//};
+          echo "::set-output name=minisha::${TRUNCATED_GITHUB_SHA}";
+          echo "::set-output name=semver::${VERSION}";
+          echo "::set-output name=version::${VERSION}+${TRUNCATED_GITHUB_SHA}"
       
       - name: "Docker: Setup Buildx"
         uses: docker/setup-buildx-action@v2
@@ -54,7 +57,7 @@ jobs:
           cache-from: type=registry,ref=ghcr.io/penguin-statistics/cicd-scratchpad:buildcache
           cache-to: type=registry,ref=ghcr.io/penguin-statistics/cicd-scratchpad:buildcache,mode=max
           build-args: |
-            VERSION=${{ env.VERSION }}
+            VERSION=${{ steps.meta.outputs.version }}
 
       - name: "GitHub: Create Repository Release"
         uses: "marvinpinto/action-automatic-releases@v1.2.1"
@@ -67,5 +70,5 @@ jobs:
         with:
           file-path: 'applications/cicd-scratchpad/values-prod.yaml'
           version-path: 'image.tag'
-          version: ${{ env.AUTOMATIC_RELEASES_TAG }}
+          version: ${{ steps.meta.outputs.semver }}
           token: ${{ secrets.PAT_FOR_MANIFESTBOT }}
