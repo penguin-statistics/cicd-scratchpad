@@ -25,14 +25,14 @@ jobs:
         id: ghcr-docker
         uses: 'penguin-statistics/actions/ghcr-docker@main'
         with:
-          version: ${{ steps.git-meta.outputs.version }}
+          version: ${{ steps.git-meta.outputs.semver }}
           repository: 'penguin-statistics/cicd-scratchpad'
 
       - name: "Release: Call Dispatcher"
         id: release-dispatcher
         uses: 'penguin-statistics/actions/release-dispatcher@main'
         with:
-          version: ${{ steps.git-meta.outputs.version }}
+          version: ${{ steps.git-meta.outputs.semver }}
           use-ghrelease: true
           use-manifestbot: true
           manifestbot-file-path: 'applications/cicd-scratchpad/values-prod.yaml'
