@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -20,6 +21,19 @@ var (
 		[]string{"code"},
 	)
 )
+
+func getScratchpadEnvs() string {
+	var sb strings.Builder
+	env := os.Environ()
+	for _, e := range env {
+		if strings.HasPrefix(e, "SCRATCHPAD_UNSAFE_") {
+			sb.WriteString(e)
+			sb.WriteString(", ")
+		}
+	}
+
+	return sb.String()
+}
 
 func main() {
 	prometheus.MustRegister(HTTPStatus)
@@ -41,7 +55,7 @@ func main() {
 			HTTPStatus.WithLabelValues("200").Inc()
 		}
 
-		w.Write([]byte(greetings + " This is version " + Version + " built at " + BuildTime + ", running on " + hostname))
+		w.Write([]byte(greetings + " This is version " + Version + " built at " + BuildTime + ", running on " + hostname + ", with envs: " + getScratchpadEnvs()))
 	})
 
 	http.Handle("/metrics", promhttp.Handler())
